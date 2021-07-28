@@ -12,7 +12,7 @@ For many problems a single objective effectively captures desirable model perfor
  
  But now think about other classic problem of breast cancer diagnosis based on the [Breast Cancer Wisconsin dataset](https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+\%28Diagnostic\%29). In this case, *how* your model classifies patients has very different implications. This is best visualized with its confusion matrix:
 
-![](Figures/Cancer%20Confusion%20Matrix%20Figure.png)
+<img src=Figures/Cancer%20Confusion%20Matrix%20Figure.png>
 
 In that false negative case your model is telling people they don't have cancer when the do, while in the false positive case your model is falsely scaring people by telling them they do have cancer when they don't. Each of these scenarios is undesirable but in different ways. Now one thing we could do is is optimize our hyperparameters to perform well on objectives like false positive rate or true positive rate which explicitly considers those undesirable cases. But in that case we are saying that we \textit{only} care about one of those off diagonal cases, which is often not true. Another common approach we could do is optimize to some weighted sum of false postive rate and true positive rate. But then the question becomes how do you weight the two objectives? Are they equally important? Maybe one is slightly more important? To further complicated the issue, there is a chance that the weighting scheme won't actually impact your optimal hyperparameters. 
 
