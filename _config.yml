@@ -1,5 +1,4 @@
 theme: jekyll-theme-slate
 title: Multi-Objective Machine Learning Hyperparameter Tuning
 description: (Without Explicit Objective Weighting)
-classes: wide
 baseurl: /multiobjective-hyperparameter
