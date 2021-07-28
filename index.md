@@ -12,7 +12,18 @@ For many problems a single objective effectively captures desirable model perfor
  
  But now think about other classic problem of breast cancer diagnosis based on the [Breast Cancer Wisconsin dataset](https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+\%28Diagnostic\%29). In this case, *how* your model classifies patients has very different implications. This is best visualized with its confusion matrix:
 
-![Figure 1](https://github.com/kravitsjacob/multiobjective-hyperparameter/blob/gh-pages/Figures/Cancer%20Confusion%20Matrix%20Figure.pdf)
+<img src=https://github.com/kravitsjacob/multiobjective-hyperparameter/blob/gh-pages/Figures/Cancer%20Confusion%20Matrix%20Figure.png>
+
+In that false negative case your model is telling people they don't have cancer when the do, while in the false positive case your model is falsely scaring people by telling them they do have cancer when they don't. Each of these scenarios is undesirable but in different ways. Now one thing we could do is is optimize our hyperparameters to perform well on objectives like false positive rate or true positive rate which explicitly considers those undesirable cases. But in that case we are saying that we \textit{only} care about one of those off diagonal cases, which is often not true. Another common approach we could do is optimize to some weighted sum of false postive rate and true positive rate. But then the question becomes how do you weight the two objectives? Are they equally important? Maybe one is slightly more important? To further complicated the issue, there is a chance that the weighting scheme won't actually impact your optimal hyperparameters. 
+
+The good news is that much smarter people than myself have thought about how solve to multi-objective problems \textit{without} needing to weight the objectives before the optimization. To use these methods we will need to rethink what \say{optimality} actually means (which we will get to later). Through this methods we will be able to study the degree to which objectives tradeoff and make an informed deicion of optimal hyperparameters. Let's do an example!
+
+## Breast Cancer Wisconsin (Diagnostic) Example
+
+We will use the previously introduced UCI Breast Cancer Diagnostic problem with a decision tree for this example. The code I am providing will be specific to using a decision tree in Python, but the methods could easily be adapted to many hyperparameterized machine laerning algorithms in many modern programming languages. 
+
+### Dependencies
+
 
 ### Markdown
 
