@@ -96,35 +96,110 @@ For this example we will focus on the two hyperparameters of a decision tree. In
 
 <img src=Figures/Hyperparameter%20Table.PNG>
 
+Additionally, we will be evaluating performance using a five-fold cross validation. In this technique we iterative split our training data as to not overfit our model to the entire training data set as was done in the previous section. For more information on what cross validation means [here](https://medium.com/@mandava807/cross-validation-and-hyperparameter-tuning-in-python-65cfb80ee485) is a blog post about it. 
 
-
-
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+This analysis is applied in the following code:
 
 ```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+def singleObjectiveGridSearch(X_train, X_test, y_train, y_test):
+    parameter_grid = {'min_samples_split': np.insert(np.arange(10, 210, 10), 0, 2), 'max_features': [2, 3, 4, 5]}
+    gs = sklearn.model_selection.GridSearchCV(sklearn.tree.DecisionTreeClassifier(random_state=1008),
+                                              parameter_grid, cv=5, scoring='accuracy', n_jobs=-1)
+    gs.fit(X_train, y_train)
+    clf = sklearn.tree.DecisionTreeClassifier(min_samples_split=gs.best_params_['min_samples_split'],
+                                 max_features=gs.best_params_['max_features'], random_state=1008)
+    clf.fit(X_train, y_train)
+    return clf, gs
+    
+clf_SO, gs_SO = singleObjectiveGridSearch(X_train, X_test, y_train, y_test)
+print(clf_SO.get_params())
+print('CV Train Accuracy:', gs_SO.best_score_)
+print('Test Accuracy:', sklearn.metrics.accuracy_score(y_test, gs_SO.predict(X_test)))
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+Running this code yields that our cross-validated training accuracy has dropped to 0.94 (from 1) but our accuracy of predicting the test set has increased to 0.94 (from 0.91). This is great news, our model is no longer being overfit to our data. 
 
-### Jekyll Themes
+But again let's return to our discussion about multiple objectives. Maximizing accuracy is sort of maximizing the "greatest good" which very much falls in line with the philosophy of John Locke. What about other objectives like false positive rate or true positive rate (linked [here](https://en.wikipedia.org/wiki/Confusion_matrix) which consider that minority of people that our model misclassifies? How do we consider those objectives without having to rank or weight them?
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/kravitsjacob/multiobjective-hyperparmater/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+### Multi-Objective Hyperparameter Tuning
 
-### Support or Contact
+In this multi-objective formulation, we will study the tradeoffs among the accuracy, false positive rate, true positive rate, and area under receiver operator characteristic curve objectives. So, we start out by computing each of those five objectives for our 84 hyperparameter combinations in our grid. Just as in the single objective case, these objectives are evaluated in a five-fold cross-validated fashion on the training set.
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+```markdown
+def fpr(y_true, y_pred):
+    tn, fp, fn, tp = sklearn.metrics.confusion_matrix(y_true, y_pred).ravel()
+    obj = fp / (fp + tn)
+    return obj
+
+
+def tpr(y_true, y_pred):
+    tn, fp, fn, tp = sklearn.metrics.confusion_matrix(y_true, y_pred).ravel()
+    obj = tp / (tp + fn)
+    return obj
+
+
+def multiObjectiveGridSearch(X_train, y_train):
+    parameter_grid = {'min_samples_split': np.insert(np.arange(10, 210, 10), 0, 2),
+                      'max_features': [2, 3, 4, 5]}
+    scoring = {'Accuracy': 'accuracy', 'True Positive Rate': sklearn.metrics.make_scorer(tpr),
+               'False Positive Rate': sklearn.metrics.make_scorer(fpr), 'AUC': 'roc_auc'}
+    gs = sklearn.model_selection.GridSearchCV(sklearn.tree.DecisionTreeClassifier(random_state=1008),
+                                              parameter_grid, cv=5, scoring=scoring, n_jobs=-1, refit=False)
+    gs.fit(X_train, y_train)
+    df = pd.DataFrame(gs.cv_results_['params'])
+    df['Mean CV Accuracy'] = gs.cv_results_['mean_test_Accuracy']
+    df['Mean CV True Positive Rate'] = gs.cv_results_['mean_test_True Positive Rate']
+    df['Mean CV False Positive Rate'] = gs.cv_results_['mean_test_False Positive Rate']
+    df['Mean CV AUC'] = gs.cv_results_['mean_test_AUC']
+    return df
+    
+    
+df_all = multiObjectiveGridSearch(X_train, y_train)
+```
+
+In this code you will notice that we defined our own true positive rate and false positive rate functions while the other two objectives are built in to sklearn. I wanted to show how easy it is to extend sklearn's functionality!
+
+How can we visualize the objective performance of our 84 hyperparameter combinations? I'm a big fan of interactive parallel plots which can be easily implemented via the HiPlot package:
+
+```markdown
+def parallelPlot(df, color_column, invert_column):
+    exp = hip.Experiment.from_dataframe(df)
+    exp.parameters_definition[color_column].colormap = 'interpolateViridis'
+    exp.display_data(hip.Displays.PARALLEL_PLOT).update({'hide': ['uid', 'max_features', 'min_samples_split'],
+                                                         'invert': invert_column})
+    exp.display_data(hip.Displays.TABLE).update({'hide': ['from_uid']})
+    return exp
+
+
+parallelPlot(df_all, color_column='Mean CV Accuracy', invert_column=cv_objs_max).to_html('all.html')
+```
+
+So what are we looking at here? Each hyperparameter combination is represented as a single line on this plot (you can see this as you hover over the table on the bottom). We oriented the axes such that down is optimal, meaning a solution that performed best on all objectives would be a straight line across the bottom. However, we don't see any solutions with that behavhior instead we see the objectives trading off performance with one another. 
+
+But let's study two solutions in this plot to compare their performance: solution with uid 66 (\texttt{max\_features}: 5, \texttt{min\_sample\_split}: 30) and solution with uid 4 (\texttt{max\_features}: 2, \texttt{min\_sample\_split}: 40). We see that solution 66 does better on \textit{every} objective than solution 4. By that reasoning, there would never be a reason to pick solution 4 if all we cared about where these four objectives. Commonly, we say that solution 66 "dominates" solution 4. Continuing this logic, we only really care about the nondominated sets of hyperparameters. So we apply a nondominated sort to this set and re-plot:
+
+```markdown
+def nondomSort(df, objs, max_objs=None):
+    df_sorting = df.copy()
+    # Flip Objectives to Maximize
+    if max_objs is not None:
+        df_sorting[max_objs] = -1.0 * df_sorting[max_objs]
+    # Nondominated Sorting
+    nondom_idx = nds.find_non_dominated(df_sorting[objs].values)
+    return df.iloc[nondom_idx]
+
+df_non_dom = nondomSort(df_all, cv_objs, max_objs=cv_objs_max)
+parallelPlot(df_non_dom, color_column='Mean CV Accuracy', invert_column=cv_objs_max).to_html('non_dom.html')
+```
+
+We see that our original 84 combinations got filtered out to just seven non-dominated combinations! Now, I want to be clear that *all seven* of theses combinations are "optimal" which may be a bit hard to wrap your head around if you are new to multi-objective optimization. Another way to think about it: Imagine you tried every combination of objective weights for these four objectives, you would always get one of these seven non-dominated hyperparaemter combinations. This concept is also called [Pareto optimality](https://en.wikipedia.org/wiki/Pareto_efficiency#:~:text=Pareto\%20efficiency\%20or\%20Pareto\%20optimality,or\%20without\%20any\%20loss\%20thereof.) if you want to read further.
+
+We can gain some insights into this problem through our plot of the set of non-dominated hyperparameters! We can see that accuracy and false positive rate are generally redundant objectives. Recall that this means that by maximizing accuracy we are also reducing the amount of people who we incorrectly diagnosing people who truly have cancer. We see that accuracy generally conflicts with true positive rate (i.e., you can't increase performance in one objective without decreaseing performance in the other). Recall that this means that by maximizing accuracy our model is falsely scaring people by telling them they have cancer when they don't. What is nice about this multi-objective approach is that we can visually see to what extents these objectives tradeoff. We can also pick an solution, like solution 2, that compromises among all the objectives.
+
+Do these objective preferences translate to test sets? For example, does a solution that have good cross-validated accuracy also have a good accuracy on a test set? Comparing the objective performance in \texttt{df\_test} and \texttt{df\_non\_dom}, we see that the objective preference are generally translated to the test set. Of course, this is expected given that we used a cross-validated approach to get non-dominated set in the first place, but it's nice to see it work out in practice! If you are curious about this code you can look at the script posted in the Github repository but I won't go into it in this blog post.
+
+## Conclusion
+
+So there you have it! A nice way to use a gridsearch to conduct a simple, yet informative, multi-objective approach to tuning hyperparamters. We demonstrated how to use the default hyperparameters, how to conduct a single-objective gridsearch, and how to conduct a multi-objective gridsearch! Along the way we also showed some interactive plotting methods to view our results. Hopefully, I have inspired you to implement a similar approach for your own machine learning problem! 
+
+A few of my colleagues and I actually applied this methodology to the problem of dam hazard classification, another problem where the types misclassification have different impacts. We optimized over many hyperparameters (and some other parameters of a geospatial model) so we utilized a multi-objective evolutionary algorithm instead of a gridserach with a non-dominated sort as was used for this blog post. The code, a video presentation, and the paper are all available \href{https://osf.io/vyzh8/}{here} if you are interested! 
