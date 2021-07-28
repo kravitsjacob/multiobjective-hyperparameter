@@ -1,8 +1,18 @@
-## Welcome to GitHub Pages
+Tuning your machine learning model's hyperparameters is a great way to tailor your model's performance. Your model keeps over-fitting to your training data? Tuning your hyperparameters can help! Whenever you tune a model's hyperparameters you need to select some objective to quantify desirable model performance. For some problems, one of which will be discussed in this post, you may want to examine how model performance changes across *several* objectives. We will see that this process allows us to make a more-informed choice of hyperparameters! 
 
-You can use the [editor on GitHub](https://github.com/kravitsjacob/multiobjective-hyperparmater/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+## What are Hyperparameter and Why Should We Tune Them?
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+The specification of hyperparameters values (whether optimal or default) is essential to many of the common machine learning algorithms because they specify model topology and ultimately model performance. For example, the number of trees in a random forest or sizes of the hidden layers in a neural network would both be be specified by hyperparameters. If you are looking for more explanation of what hyperparameters are and how they differ from regular parameters, I suggest you read [this](https://machinelearningmastery.com/difference-between-a-parameter-and-a-hyperparameter/#:~:text=In\%20summary\%2C\%20model\%20parameters\%20are,be\%20set\%20manually\%20and\%20tuned) article or even just browse through the [Wikipedia Page](https://en.wikipedia.org/wiki/Hyperparameter_(machine_learning)) on hyperparameters.
+
+Now I want to be clear, tuning hyperparameters is generally a "finishing touches" step when developing a machine learning model. Shahul ES said it best in [this](https://neptune.ai/blog/hyperparameter-tuning-in-python-a-complete-guide-2020) article by stating that hyperparameter tuning is a great way to "extract the last juice out of your models". Processes like model or feature selection cannot be overlooked. Moral of the story: if your model is severely under-performing or just flat-out broken, don't look to hyperparameter tuning to fix all your problems.
+
+## Why Even Consider Multiple Objectives?
+
+For many problems a single objective effectively captures desirable model performance. For example, consider the classic [Iris Classification Problem](https://archive.ics.uci.edu/ml/datasets/iris) where a model classifies types or iris flowers. You are probably thinking that for this task you want a model that is as accurate as possible, and I would agree! For the Iris problem, I would definetly pick the set of hyperparameters that maximizes model accuracy. 
+ 
+ But now think about other classic problem of breast cancer diagnosis based on the [Breast Cancer Wisconsin dataset](https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+\%28Diagnostic\%29). In this case, *how* your model classifies patients has very different implications. This is best visualized with its confusion matrix:
+
+
 
 ### Markdown
 
