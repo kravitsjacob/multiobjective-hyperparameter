@@ -144,9 +144,6 @@ def main():
     df_non_dom['True Positive Rate Improvement'] = df_non_dom['Test True Positive Rate'] - df_non_dom['Mean CV True Positive Rate']
     df_non_dom['False Positive Rate Improvement'] = df_non_dom['Mean CV False Positive Rate'] - df_non_dom['Test False Positive Rate']
     df_non_dom['AUC Improvement'] = df_non_dom['Test AUC'] - df_non_dom['Mean CV AUC']
-    # Export for Plotting
-    df_all.to_csv('all.csv')
-    df_non_dom.to_csv('non_dom.csv')
     return 0
 
 

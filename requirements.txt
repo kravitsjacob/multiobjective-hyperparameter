@@ -1,0 +1,5 @@
+numpy==1.20.2
+pandas==1.2.4
+scikit-learn==0.24.2
+pymoo==0.4.2.2
+hiplot==0.1.24
