@@ -15,5 +15,5 @@ that it is installed correctly go to the command prompt/terminal and enter $ doc
 3. Make sure you have Python 3 installed on your computer. This can be downloaded [here](https://www.python.org/downloads/). To ensure 
 that it is installed correctly go to the command prompt/terminal and enter $ python --version
 4. Set up and activate a virtual environment by following instructions [here](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/). 
-7. Install dependcies using requirments.txt found [here](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/#using-requirements-files)
+7. Install dependcies using requirements.txt found [here](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/#using-requirements-files)
 8. Run script using $python main.py
