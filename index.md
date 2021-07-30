@@ -119,7 +119,7 @@ print('Test Accuracy:', sklearn.metrics.accuracy_score(y_test, gs_SO.predict(X_t
 
 Running this code yields that our cross-validated training accuracy has dropped to 0.94 (from 1.00) but our accuracy of predicting the test set has increased to 0.94 (from 0.91). This is great news; our model is no longer being overfit to our data! 
 
-But let's return to our discussion about multiple objectives. Maximizing accuracy is sort of maximizing the "greatest good" which very much falls in line with the [philosophy of Jeremy Bentham](https://en.wikipedia.org/wiki/Utilitarianism). What about other objectives like false positive rate or true positive rate (linked [here](https://en.wikipedia.org/wiki/Confusion_matrix) which consider that minority of people that our model misclassifies? How do we consider those objectives without having to rank or weight them?
+But let's return to our discussion about multiple objectives. Maximizing accuracy is sort of maximizing the "greatest good" which very much falls in line with the [philosophy of Jeremy Bentham](https://en.wikipedia.org/wiki/Utilitarianism). What about other objectives like false positive rate or true positive rate (formulae linked [here](https://en.wikipedia.org/wiki/Confusion_matrix)) which consider the minority of people that our model misclassifies? How do we consider those objectives without having to rank or weight them?
 
 #### Multi-Objective Hyperparameter Tuning
 
