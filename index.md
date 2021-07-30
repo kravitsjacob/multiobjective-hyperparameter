@@ -12,7 +12,7 @@ For many problems a single objective effectively captures desirable model perfor
  
 But now think about the other classic problem of breast cancer diagnosis based on the [Breast Cancer Wisconsin dataset](https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+\%28Diagnostic\%29) currently hosted in the University of California, Irvine repository. In this case, *how* your model classifies patients has very different implications. This is best visualized with its confusion matrix:
 
-<p style="text-align:center;"><img src="https://github.com/kravitsjacob/multiobjective-hyperparameter/blob/gh-pages/Figures/Cancer%20Confusion%20Matrix.svg?raw=True></p>
+<p align="center"><img src="https://github.com/kravitsjacob/multiobjective-hyperparameter/blob/gh-pages/Figures/Cancer%20Confusion%20Matrix.svg?raw=True></p>
 
 <img src="https://github.com/kravitsjacob/multiobjective-hyperparameter/blob/gh-pages/Figures/Cancer%20Confusion%20Matrix.svg?raw=True" />
  
