@@ -14,9 +14,6 @@ But now think about the other classic problem of breast cancer diagnosis based o
 
 <p align="center"><img src="https://github.com/kravitsjacob/multiobjective-hyperparameter/blob/gh-pages/Figures/Cancer%20Confusion%20Matrix.svg?raw=True"></p>
 
-<img src="https://github.com/kravitsjacob/multiobjective-hyperparameter/blob/gh-pages/Figures/Cancer%20Confusion%20Matrix.svg?raw=True" />
- 
- 
 In the false negative case, your model is telling people they *don't* have cancer when they *do*. In the false positive case, your model is falsely scaring people by telling them they *do* have cancer when they *don't*. Each of these scenarios is undesirable but in different ways. One thing we could do is optimize our hyperparameters to perform well on objectives like false positive rate or true positive rate which explicitly considers those undesirable cases. But in those cases, we are saying that we *only* care about one of those off diagonal cases, which is often not true. Another common approach we could do is optimize to some weighted sum of false positive rate and true positive rate. But then the question becomes how do you weight the two objectives? Are they equally important? Maybe one is slightly more important? To further complicate the issue, there is a chance that some weighting schemes will not impact the actual values of optimal hyperparameters. 
 
 The good news is that much smarter people than me have thought about how to solve to multi-objective problems *without* needing to weight the objectives before the optimization. To use these methods, we will need to rethink what "optimality" actually means (which we will get to later). Through these methods we will be able to study the degree to which objectives tradeoff and make an informed decision of optimal hyperparameters. Let's do an example!
@@ -97,7 +94,7 @@ After running this code, we see that the training accuracy is 1.00 and the test 
 
 For this example, we will focus on two hyperparameters of a decision tree. In this single objective version, we want to find the set of hyperparameters that maximizes accuracy. We will specify a "grid" of possible values over which we will tune. This grid yields 84 possible combinations.
 
-<img src=Figures/Hyperparameter%20Table.PNG>
+<p align="center"><img src="https://github.com/kravitsjacob/multiobjective-hyperparameter/blob/gh-pages/Figures/Hyperparameter%20Table.svg?raw=True"></p>
 
 Additionally, we will be evaluating performance using five-fold cross validation. In this technique, we iteratively split our training data as to not overfit our model to the entire training data set as was done in the previous section. For more information on what cross validation means [here is a blog post](https://medium.com/@mandava807/cross-validation-and-hyperparameter-tuning-in-python-65cfb80ee485) and [here is an article]( https://projecteuclid.org/journals/statistics-surveys/volume-4/issue-none/A-survey-of-cross-validation-procedures-for-model-selection/10.1214/09-SS054.full). 
 
