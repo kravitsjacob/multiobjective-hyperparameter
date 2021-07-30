@@ -12,8 +12,10 @@ cv_objs = ['Mean CV Accuracy', 'Mean CV True Positive Rate', 'Mean CV False Posi
 cv_objs_max = ['Mean CV Accuracy', 'Mean CV True Positive Rate', 'Mean CV AUC']
 test_objs = ['Test Accuracy', 'Test True Positive Rate', 'Test False Positive Rate', 'Test AUC']
 
-
 def dataPreparation():
+    # Test Parameters
+    test_size = 0.25
+    number_features = 5
     # Import
     data = sklearn.datasets.load_breast_cancer(as_frame=True)
     features = data.feature_names.tolist()
@@ -24,11 +26,11 @@ def dataPreparation():
     clf.fit(df[features], df['Classification'])
     feature_importances = pd.Series(list(clf.feature_importances_),
                                     index=features).sort_values(ascending=False)
-    important_features = feature_importances[0:5].index.tolist()
+    important_features = feature_importances[0:number_features].index.tolist()
     # Split
     X_train, X_test, y_train, y_test = sklearn.model_selection.train_test_split(df[important_features],
                                                                                 df['Classification'],
-                                                                                test_size=0.25,
+                                                                                test_size=test_size,
                                                                                 random_state=1008,
                                                                                 stratify=df['Classification'])
     return X_train, X_test, y_train, y_test
@@ -40,7 +42,7 @@ def defaultHyperparameter(X_train, y_train):
     return clf
 
 
-def singleObjectiveGridSearch(X_train, X_test, y_train, y_test):
+def singleObjectiveGridSearch(X_train, y_train):
     parameter_grid = {'min_samples_split': np.insert(np.arange(10, 210, 10), 0, 2), 'max_features': [2, 3, 4, 5]}
     gs = sklearn.model_selection.GridSearchCV(sklearn.tree.DecisionTreeClassifier(random_state=1008),
                                               parameter_grid, cv=5, scoring='accuracy', n_jobs=-1)
@@ -84,7 +86,7 @@ def nondomSort(df, objs, max_objs=None):
     # Flip Objectives to Maximize
     if max_objs is not None:
         df_sorting[max_objs] = -1.0 * df_sorting[max_objs]
-    # Nondominated Sorting
+    # Non-dominated Sorting
     nondom_idx = nds.find_non_dominated(df_sorting[objs].values)
     return df.iloc[nondom_idx]
 
@@ -110,40 +112,33 @@ def getTestPerformance(X_train, X_test, y_train, y_test, params):
     tpr = tp / (tp + fn)
     fpr = fp / (fp + tn)
     auc = sklearn.metrics.roc_auc_score(y_test, clf.predict_proba(X_test)[:, 1])
-    return pd.Series({'Test Accuracy': acc, 'Test True Positive Rate': tpr, 'Test False Positive Rate': fpr,
-                      'Test AUC': auc})
+    return pd.Series([acc, tpr, fpr, auc], test_objs)
 
 
 def main():
-    # Prep
+    # Prepare
     X_train, X_test, y_train, y_test = dataPreparation()
     # Default Hyperparameter Values
-    clf_df = defaultHyperparameter(X_train, y_train)
-    print(clf_df.get_params())
-    print('Train Accuracy:', sklearn.metrics.accuracy_score(y_train, clf_df.predict(X_train)))
-    print('Test Accuracy:', sklearn.metrics.accuracy_score(y_test, clf_df.predict(X_test)))
+    clf_def = defaultHyperparameter(X_train, y_train)
+    print(clf_def.get_params())
+    print('Train Accuracy:', sklearn.metrics.accuracy_score(y_train, clf_def.predict(X_train)))
+    print('Test Accuracy:', sklearn.metrics.accuracy_score(y_test, clf_def.predict(X_test)))
     # Single Objective Grid Search
-    clf_SO, gs_SO = singleObjectiveGridSearch(X_train, X_test, y_train, y_test)
+    clf_SO, gs_SO = singleObjectiveGridSearch(X_train, y_train)
     print(clf_SO.get_params())
     print('CV Train Accuracy:', gs_SO.best_score_)
     print('Test Accuracy:', sklearn.metrics.accuracy_score(y_test, gs_SO.predict(X_test)))
-    # Multi Objective Grid Search
+    # Multi-Objective Grid Search
     df_all = multiObjectiveGridSearch(X_train, y_train)
     parallelPlot(df_all, color_column='Mean CV Accuracy', invert_column=cv_objs_max).to_html('all.html')
     df_non_dom = nondomSort(df_all, cv_objs, max_objs=cv_objs_max)
     parallelPlot(df_non_dom, color_column='Mean CV Accuracy', invert_column=cv_objs_max).to_html('non_dom.html')
-    # Test Performance
-    df_test = df_non_dom.apply(lambda row: getTestPerformance(X_train, X_test, y_train, y_test, row), axis=1)
-    df_test['Accuracy Improvement'] = df_test['Test Accuracy'] - df_non_dom['Mean CV Accuracy']
-    df_test['True Positive Rate Improvement'] = df_test['Test True Positive Rate'] - df_non_dom['Mean CV True Positive Rate']
-    df_test['False Positive Rate Improvement'] = df_non_dom['Mean CV False Positive Rate'] - df_test['Test False Positive Rate']
-    df_test['AUC Improvement'] = df_test['Test AUC'] - df_non_dom['Mean CV AUC']
-    df_non_dom[test_objs] = df_non_dom.apply(lambda row: getTestPerformance(X_train, X_test, y_train, y_test, row), axis=1)
-    # See Change
-    df_non_dom['Accuracy Improvement'] = df_non_dom['Test Accuracy']-df_non_dom['Mean CV Accuracy']
-    df_non_dom['True Positive Rate Improvement'] = df_non_dom['Test True Positive Rate'] - df_non_dom['Mean CV True Positive Rate']
-    df_non_dom['False Positive Rate Improvement'] = df_non_dom['Mean CV False Positive Rate'] - df_non_dom['Test False Positive Rate']
-    df_non_dom['AUC Improvement'] = df_non_dom['Test AUC'] - df_non_dom['Mean CV AUC']
+    # Non-Dominated Set Test Performance
+    df_non_dom_test = df_non_dom.apply(lambda row: getTestPerformance(X_train, X_test, y_train, y_test, row), axis=1)
+    df_non_dom = df_non_dom.join(df_non_dom_test)
+    # Check if Objective Performance is Preserved by Looking at Sorted Objective Values
+    for i, j in zip(cv_objs, test_objs):
+        print(df_non_dom[[i, j]].sort_values(i, ascending=False))
     return 0
 
 
