@@ -24,7 +24,7 @@ We will use the previously introduced UCI Breast Cancer Diagnostic problem with 
 
 #### Dependencies
 
-This example will use the Sciki-Learn[(Pedregosa et al. 2011)](https://scikit-learn.org/stable/), NumPy[(Harris et al. 2020)](https://numpy.org/), Pandas[(The pandas development team 2020)](https://pandas.pydata.org/), and Pymoo[(Blank and Deb 2020)](https://pymoo.org/) libraries for the actual analysis. We will us the HiPlot[(Haziza, Rapin, and Synnaeve 2020)](https://ai.facebook.com/blog/hiplot-high-dimensional-interactive-plots-made-easy/) packages to do some interactive visualization. Install them in your current environment if you haven't already done so. If you want to go the Github route, [here is the repository]( https://github.com/kravitsjacob/multiobjective-hyperparameter) which contains the script as well as goodies needed to run the code I will provide! Specifically, that repository has a Dockerfile and virtual environment dependencies. I recommend using one of those two options to ensure consistent results with the blog post (I have also included instructions for those not familiar with either method). However, the code should run in any environment with Python 3 and all the proper dependencies installed.
+This example will use the Sciki-Learn [(Pedregosa et al. 2011)](https://scikit-learn.org/stable/), NumPy [(Harris et al. 2020)](https://numpy.org/), Pandas [(The pandas development team 2020)](https://pandas.pydata.org/), and Pymoo [(Blank and Deb 2020)](https://pymoo.org/) libraries for the actual analysis. We will us the HiPlot [(Haziza, Rapin, and Synnaeve 2020)](https://ai.facebook.com/blog/hiplot-high-dimensional-interactive-plots-made-easy/) packages to do some interactive visualization. Install them in your current environment if you haven't already done so. If you want to go the Github route, [here is the repository]( https://github.com/kravitsjacob/multiobjective-hyperparameter) which contains the script as well as goodies needed to run the code I will provide! Specifically, that repository has a Dockerfile and virtual environment dependencies. I recommend using one of those two options to ensure consistent results with the blog post (I have also included instructions for those not familiar with either method). However, the code should run in any environment with Python 3 and all the proper dependencies installed.
 
 Once you have everything installed you should be able to import everything as such. We also create some naming variables which we will leave in the global scope.
 
@@ -221,18 +221,33 @@ There you have it! A nice way to use a grid search to conduct a simple, yet info
 
 ## References
 Agarwal, Rahul. 2020. “The 5 Feature Selection Algorithms Every Data Scientist Should Know.” Medium. September 11, 2020. https://towardsdatascience.com/the-5-feature-selection-algorithms-every-data-scientist-need-to-know-3a6b566efd2.
+
 Blank, J., and K. Deb. 2020. “Pymoo: Multi-Objective Optimization in Python.” IEEE Access 8: 89497–509.
+
 Brownlee, Jason. 2017. “What Is the Difference Between a Parameter and a Hyperparameter?” Machine Learning Mastery (blog). July 25, 2017. https://machinelearningmastery.com/difference-between-a-parameter-and-a-hyperparameter/.
-———. 2020. “Train-Test Split for Evaluating Machine Learning Algorithms.” Machine Learning Mastery (blog). July 23, 2020. https://machinelearningmastery.com/train-test-split-for-evaluating-machine-learning-algorithms/.
+
+Brownlee, Jason. 2020. “Train-Test Split for Evaluating Machine Learning Algorithms.” Machine Learning Mastery (blog). July 23, 2020. https://machinelearningmastery.com/train-test-split-for-evaluating-machine-learning-algorithms/.
+
 Dua, Dheeru, and Casey Graff. 2017. “UCI Machine Learning Repository.” University of California, Irvine, School of Information and Computer Sciences. http://archive.ics.uci.edu/ml.
+
 ES, Shahul. 2021. “Hyperparameter Tuning in Python: A Complete Guide 2021.” Neptune.Ai. July 19, 2021. https://neptune.ai/blog/hyperparameter-tuning-in-python-a-complete-guide-2020.
+
 Harris, Charles R., K. Jarrod Millman, Stéfan J. van der Walt, Ralf Gommers, Pauli Virtanen, David Cournapeau, Eric Wieser, et al. 2020. “Array Programming with NumPy.” Nature 585 (7825): 357–62. https://doi.org/10.1038/s41586-020-2649-2.
+
 Haziza, D., J. Rapin, and G. Synnaeve. 2020. “Hiplot, Interactive High-Dimensionality Plots.” GitHub Repository. GitHub. https://github.com/facebookresearch/hiplot.
+
 Langley, Pat. 1994. “Selection of Relevant Features in Machine Learning.” Fort Belvoir, VA: Defense Technical Information Center. https://doi.org/10.21236/ADA292575.
+
 Mandava, saranya. 2018. “Cross Validation and HyperParameter Tuning in Python.” Medium (blog). September 18, 2018. https://medium.com/@mandava807/cross-validation-and-hyperparameter-tuning-in-python-65cfb80ee485.
+
 Pedregosa, F., G. Varoquaux, A. Gramfort, V. Michel, B. Thirion, O. Grisel, M. Blondel, et al. 2011. “Scikit-Learn: Machine Learning in Python.” Journal of Machine Learning Research 12: 2825–30.
+
 Probst, Philipp, Anne-Laure Boulesteix, and Bernd Bischl. 2019. “Tunability: Importance of Hyperparameters of Machine Learning Algorithms.” J. Mach. Learn. Res. 20 (1): 1934–65.
+
 Raseman, William J., Joshuah Jacobson, and Joseph R. Kasprzyk. 2019. “Parasol: An Open Source, Interactive Parallel Coordinates Library for Multi-Objective Decision Making.” Environmental Modelling & Software 116: 153–63. https://doi.org/10.1016/j.envsoft.2019.03.005.
+
 Sylvain Arlot and Alain Celisse. 2010. “A Survey of Cross-Validation Procedures for Model Selection.” Statistics Surveys 4 (none): 40–79. https://doi.org/10.1214/09-SS054.
+
 The pandas development team. 2020. Pandas-Dev/Pandas: Pandas (version latest). Zenodo. https://doi.org/10.5281/zenodo.3509134.
+
 Wang, Zhiyuan, and Gade Pandu Rangaiah. 2017. “Application and Analysis of Methods for Selecting an Optimal Solution from the Pareto-Optimal Front Obtained by Multiobjective Optimization.” Industrial & Engineering Chemistry Research 56 (2): 560–74. https://doi.org/10.1021/acs.iecr.6b03453.
