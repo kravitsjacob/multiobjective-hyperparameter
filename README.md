@@ -38,12 +38,12 @@ To cite the methods employed in this blog post, please cite:
 To cite this repository or the corresponding blog post, please cite:
 ```bibtex
 @misc{kravits_multi-objective_2021,
-	title = {Multi-{Objective} {Machine} {Learning} {Hyperparameter} {Tuning} ({Without} {Explicit} {Objective} {Weighting})},
-	url = {https://github.com/kravitsjacob/multiobjective-hyperparameter},
-	publisher = {GitHub},
-	author = {Kravits, Jacob},
-	year = {2021},
-	note = {Publication Title: GitHub repository},
+      title = {Multi-{Objective} {Machine} {Learning} {Hyperparameter} {Tuning} ({Without} {Explicit} {Objective} {Weighting})},
+      url = {https://github.com/kravitsjacob/multiobjective-hyperparameter},
+      publisher = {GitHub},
+      author = {Kravits, Jacob},
+      year = {2021},
+      note = {Publication Title: GitHub repository},
 }
 ```
 
