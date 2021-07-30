@@ -19,30 +19,31 @@ that it is installed correctly go to the command prompt/terminal and enter $ pyt
 8. Run script using $python main.py
 
 # IV Citing
-To cite the methods employed in this blog post please cite:
+To cite the methods employed in this blog post, please cite:
 ```bibtex
-@article{doi:10.1061/(ASCE)WR.1943-5452.0001414,
-author = {Jacob Kravits  and Joseph Kasprzyk  and Kyri Baker  and Konstantinos Andreadis },
-title = {Screening Tool for Dam Hazard Potential Classification Using Machine Learning and Multiobjective Parameter Tuning},
-journal = {Journal of Water Resources Planning and Management},
-volume = {147},
-number = {10},
-pages = {04021064},
-year = {2021},
-doi = {10.1061/(ASCE)WR.1943-5452.0001414},
-URL = {https://ascelibrary.org/doi/abs/10.1061/%28ASCE%29WR.1943-5452.0001414},
-eprint = {https://ascelibrary.org/doi/pdf/10.1061/%28ASCE%29WR.1943-5452.0001414}
+@article{kravits_screening_2021,
+         title = {Screening {Tool} for {Dam} {Hazard} {Potential} {Classification} {Using} {Machine} {Learning} and {Multiobjective} {Parameter} {Tuning}},
+         volume = {147},
+         url = {https://ascelibrary.org/doi/abs/10.1061/%28ASCE%29WR.1943-5452.0001414},
+         doi = {10.1061/(ASCE)WR.1943-5452.0001414},
+         number = {10},
+         journal = {Journal of Water Resources Planning and Management},
+         author = {Kravits, Jacob and Kasprzyk, Joseph and Baker, Kyri and Andreadis, Konstantinos},
+         year = {2021},
+         note = {\_eprint: https://ascelibrary.org/doi/pdf/10.1061/\%28ASCE\%29WR.1943-5452.0001414},
+         pages = {04021064},
 }
 ```
 
-To cite the blog post or this repository please cite:
+To cite this repository or the corresponding blog post, please cite:
 ```bibtex
-@misc{author = {Kravits, Jacob},
-      title = {{Multi-Objective Machine Learning Hyperparameter Tuning (Without Explicit Objective Weighting)}},
-      year = {2021},
-      publisher = {GitHub},
-      journal = {GitHub repository},
-      howpublished = {\url{https://github.com/kravitsjacob/multiobjective-hyperparameter}},
+@misc{kravits_multi-objective_2021,
+	title = {Multi-{Objective} {Machine} {Learning} {Hyperparameter} {Tuning} ({Without} {Explicit} {Objective} {Weighting})},
+	url = {https://github.com/kravitsjacob/multiobjective-hyperparameter},
+	publisher = {GitHub},
+	author = {Kravits, Jacob},
+	year = {2021},
+	note = {Publication Title: GitHub repository},
 }
 ```
 
