@@ -200,7 +200,18 @@ We see that our original 84 combinations got filtered out to just seven non-domi
 
 We can gain some insights into this problem through our plot of the set of non-dominated hyperparameters! We can see that accuracy and false positive rate are generally redundant objectives. Recall that this means that by maximizing accuracy we are also reducing the amount of people who we incorrectly diagnosing people who truly have cancer. We see that accuracy generally conflicts with true positive rate (i.e., you can't increase performance in one objective without decreaseing performance in the other). Recall that this means that by maximizing accuracy our model is falsely scaring people by telling them they have cancer when they don't. What is nice about this multi-objective approach is that we can visually see to what extents these objectives tradeoff. We can also pick an solution, like solution 2, that compromises among all the objectives.
 
-Do these objective preferences translate to test sets? For example, does a solution that have good cross-validated accuracy also have a good accuracy on a test set? Comparing the objective performance in ```df_test``` and ```df_non_dom```, we see that the objective preference are generally translated to the test set. Of course, this is expected given that we used a cross-validated approach to get non-dominated set in the first place, but it's nice to see it work out in practice! If you are curious about this code you can look at the script posted in the Github repository but I won't go into it in this blog post.
+Do these objective preferences translate to test sets? For example, does a solution that have good cross-validated accuracy also have a good accuracy on a test set? We can test this by ranking the test performance for each objective and compare the test performance to the cross-validated performance. This is simply done in the following code:
+
+```markdown
+# Non-Dominated Set Test Performance
+df_non_dom_test = df_non_dom.apply(lambda row: getTestPerformance(X_train, X_test, y_train, y_test, row), axis=1)
+df_non_dom = df_non_dom.join(df_non_dom_test)
+# Check if Objective Performance is Preserved by Looking at Sorted Objective Values
+for i, j in zip(cv_objs, test_objs):
+    print(df_non_dom[[i, j]].sort_values(i, ascending=False))
+```
+
+We see that the objective preferences are generally translated to the test set (there are a few exceptions due to rounding). Of course, this is behavior was expected given that we used a cross-validated approach to get non-dominated set in the first place, but it's nice to see the cross-validation is working. This is great news as we can be confident the objective preferences we spent so much time forming and investigating throughout this process will translate to new datasets!
 
 ## Conclusion
 
