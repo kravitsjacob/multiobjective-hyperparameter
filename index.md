@@ -174,7 +174,7 @@ def parallelPlot(df, color_column, invert_column):
 parallelPlot(df_all, color_column='Mean CV Accuracy', invert_column=cv_objs_max).to_html('all.html')
 ```
 
-INSERT HTML HERE
+<{% include all.html %}>
 
 So what are we looking at here? Each hyperparameter combination is represented as a single line on this plot (you can see this as you hover over the table on the bottom). We oriented the axes such that down is optimal, meaning a solution that performed best on all objectives would be a straight line across the bottom. However, we don't see any solutions with that behavior instead we see the objectives trading off performance with one another. 
 
