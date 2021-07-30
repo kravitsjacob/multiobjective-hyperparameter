@@ -173,7 +173,7 @@ def parallelPlot(df, color_column, invert_column):
 
 parallelPlot(df_all, color_column='Mean CV Accuracy', invert_column=cv_objs_max).to_html('all.html')
 ```
-
+ 
 {% include all.html %}
 
 So what are we looking at here? Each hyperparameter combination is represented as a single line on this plot (you can see this as you hover over the table on the bottom). We oriented the axes such that down is optimal, meaning a solution that performed best on all objectives would be a straight line across the bottom. However, we don't see any solutions with that behavior instead we see the objectives trading off performance with one another. 
@@ -194,7 +194,7 @@ df_non_dom = nondomSort(df_all, cv_objs, max_objs=cv_objs_max)
 parallelPlot(df_non_dom, color_column='Mean CV Accuracy', invert_column=cv_objs_max).to_html('non_dom.html')
 ```
 
-<{% include non_dom.html %}>
+{% include non_dom.html %}
 
 We see that our original 84 solutions got filtered out to just seven non-dominated solutions! I want to be clear that *all seven* of these solutions are "optimal" which may be a bit hard to wrap your head around if you are new to multi-objective optimization. Another way to think about it: Imagine you tried every combination of objective weights for these four objectives, you would always get one of these seven non-dominated hyperparameter solutions. This concept is also called [Pareto optimality](https://en.wikipedia.org/wiki/Pareto_efficiency#:~:text=Pareto\%20efficiency\%20or\%20Pareto\%20optimality,or\%20without\%20any\%20loss\%20thereof.) if you want to read further.
 
