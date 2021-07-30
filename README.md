@@ -43,6 +43,7 @@ To cite this repository or the corresponding blog post, please cite:
       publisher = {GitHub},
       author = {Kravits, Jacob},
       year = {2021},
+      doi = {10.5281/zenodo.5149306},
       note = {Publication Title: GitHub repository},
 }
 ```
