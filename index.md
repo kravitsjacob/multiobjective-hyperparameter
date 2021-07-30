@@ -14,7 +14,7 @@ But now think about the other classic problem of breast cancer diagnosis based o
 
 {% include confusion_matrix.html %}
 
-<img src=Figures/Cancer%20Confusion%20Matrix%20Figure.png?raw=true />
+<img src="https://github.com/kravitsjacob/multiobjective-hyperparameter/blob/gh-pages/_includes/Cancer%20Confusion%20Matrix%20Figure.png?raw=true" />
 
 In the false negative case, your model is telling people they *don't* have cancer when they *do*. In the false positive case, your model is falsely scaring people by telling them they *do* have cancer when they *don't*. Each of these scenarios is undesirable but in different ways. One thing we could do is optimize our hyperparameters to perform well on objectives like false positive rate or true positive rate which explicitly considers those undesirable cases. But in those cases, we are saying that we *only* care about one of those off diagonal cases, which is often not true. Another common approach we could do is optimize to some weighted sum of false positive rate and true positive rate. But then the question becomes how do you weight the two objectives? Are they equally important? Maybe one is slightly more important? To further complicate the issue, there is a chance that some weighting schemes will not impact the actual values of optimal hyperparameters. 
 
