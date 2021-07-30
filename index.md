@@ -12,8 +12,11 @@ For many problems a single objective effectively captures desirable model perfor
  
 But now think about the other classic problem of breast cancer diagnosis based on the [Breast Cancer Wisconsin dataset](https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+\%28Diagnostic\%29) currently hosted in the University of California, Irvine repository. In this case, *how* your model classifies patients has very different implications. This is best visualized with its confusion matrix:
 
-<center> <img src="https://github.com/kravitsjacob/multiobjective-hyperparameter/blob/gh-pages/Figures/Cancer%20Confusion%20Matrix.svg> </center>
+<p style="text-align:center;"><img src="https://github.com/kravitsjacob/multiobjective-hyperparameter/blob/gh-pages/Figures/Cancer%20Confusion%20Matrix.svg?raw=True></p>
 
+<img src="https://github.com/kravitsjacob/multiobjective-hyperparameter/blob/gh-pages/Figures/Cancer%20Confusion%20Matrix.svg?raw=True" />
+ 
+ 
 In the false negative case, your model is telling people they *don't* have cancer when they *do*. In the false positive case, your model is falsely scaring people by telling them they *do* have cancer when they *don't*. Each of these scenarios is undesirable but in different ways. One thing we could do is optimize our hyperparameters to perform well on objectives like false positive rate or true positive rate which explicitly considers those undesirable cases. But in those cases, we are saying that we *only* care about one of those off diagonal cases, which is often not true. Another common approach we could do is optimize to some weighted sum of false positive rate and true positive rate. But then the question becomes how do you weight the two objectives? Are they equally important? Maybe one is slightly more important? To further complicate the issue, there is a chance that some weighting schemes will not impact the actual values of optimal hyperparameters. 
 
 The good news is that much smarter people than me have thought about how to solve to multi-objective problems *without* needing to weight the objectives before the optimization. To use these methods, we will need to rethink what "optimality" actually means (which we will get to later). Through these methods we will be able to study the degree to which objectives tradeoff and make an informed decision of optimal hyperparameters. Let's do an example!
