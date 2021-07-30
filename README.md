@@ -9,7 +9,7 @@ that it is installed correctly go to the command prompt/terminal and enter $ doc
 4. Build the docker image by running $docker build --tag mohyper .
 5. Run the image and mount the folder so you can retrieve generated files $docker run -v <insert_path_to_data>\multiobjective-hyperparameter:/app mohyper 
 
-# III Running this code in Virtual Environment
+# III Running this code in a Virtual Environment
 1. Clone this repository using command prompt/terminal $git clone https://github.com/kravitsjacob/multiobjective-hyperparameter 
 2. Change to the current working directory using command prompt/terminal $ cd <insert_path_to_data>\multiobjective-hyperparameter
 3. Make sure you have Python 3 installed on your computer. This can be downloaded [here](https://www.python.org/downloads/). To ensure 

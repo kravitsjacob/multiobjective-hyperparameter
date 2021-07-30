@@ -92,11 +92,16 @@ def nondomSort(df, objs, max_objs=None):
 
 
 def parallelPlot(df, color_column, invert_column):
+    # Make Unique IDs
+    df['Solution ID'] = df.index + 1
+    df['Solution ID'] = df['Solution ID'].apply(lambda x: '{0:0>5}'.format(x))
+    df['Solution ID'] = 'S'+df['Solution ID'].astype(str)
+    # Create Plot
     exp = hip.Experiment.from_dataframe(df)
     exp.parameters_definition[color_column].colormap = 'interpolateViridis'
     exp.display_data(hip.Displays.PARALLEL_PLOT).update({'hide': ['uid', 'max_features', 'min_samples_split'],
                                                          'invert': invert_column})
-    exp.display_data(hip.Displays.TABLE).update({'hide': ['from_uid']})
+    exp.display_data(hip.Displays.TABLE).update({'hide': ['uid', 'from_uid']})
     return exp
 
 
