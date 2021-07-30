@@ -22,7 +22,7 @@ The good news is that much smarter people than me have thought about how to solv
 
 We will use the previously introduced UCI Breast Cancer Diagnostic problem with a decision tree for this example. The code I am providing will be specific to using a decision tree in Python, but the methods could easily be adapted to many hyperparameterized machine learning algorithms in many modern programming languages. 
 
-### Dependencies
+#### Dependencies
 
 This example will use the [Sciki-Learn](https://scikit-learn.org/stable/), [NumPy](https://numpy.org/), [Pandas](https://pandas.pydata.org/), and [Pymoo](https://pymoo.org/) libraries for the actual analysis. We will us the [HiPlot](https://ai.facebook.com/blog/hiplot-high-dimensional-interactive-plots-made-easy/) packages to do some interactive visualization. Install them in your current environment if you haven't already done so. If you want to go the Github route, [here is the repository]( https://github.com/kravitsjacob/multiobjective-hyperparameter) which contains the script as well as goodies needed to run the code I will provide! Specifically, that repository has a dockerfile and virtual environment dependencies. I recommend using one of those two options to ensure consistent results with the blog post (I have also included instructions for those not familiar with either method). However, the code should run in any environment with Python 3 and all the proper dependencies installed.
 
@@ -44,7 +44,7 @@ cv_objs_max = ['Mean CV Accuracy', 'Mean CV True Positive Rate', 'Mean CV AUC']
 test_objs = ['Test Accuracy', 'Test True Positive Rate', 'Test False Positive Rate', 'Test AUC']
 ```
 
-### Data Preparation
+#### Data Preparation
 Fortunately, the UCI Breast Cancer dataset is available for direct import via Scikit-Learn (so no need to manually download it yourself)! Feature selection is the process of determining only the most important features for your problem. Feature selection won't be the focus of this post, so I encourage you to read [this blog post](https://towardsdatascience.com/the-5-feature-selection-algorithms-every-data-scientist-need-to-know-3a6b566efd2) or [this article](https://www.aaai.org/Papers/Symposia/Fall/1994/FS-94-02/FS94-02-034.pdf) if you aren't familiar with feature selection. We do a basic feature selection using the feature importances from a random forest. After we do our feature selection, we split the data and save 25 % for testing our model. We do a (stratified split)[https://machinelearningmastery.com/train-test-split-for-evaluating-machine-learning-algorithms/]. I have provided a simple function and function call to do this:
 
 ```markdown
@@ -72,7 +72,7 @@ def dataPreparation():
 X_train, X_test, y_train, y_test = dataPreparation()
 ```
 
-### Default Hyperparameters
+#### Default Hyperparameters
 
 Let's look at the performance of the default hyperparameters. These values are typically derived based on statistical proofs and are meant to perform okay on many problems.
 
@@ -90,7 +90,7 @@ print('Test Accuracy:', sklearn.metrics.accuracy_score(y_test, clf_df.predict(X_
 
 After running this code, we see that the training accuracy is 1.00 and the test accuracy is 0.91. This means that our decision tree is being overfit to our training data. Here is a great opportunity to tune our hyperparameters so as not to overfit!
 
-### Single Objective Hyperparameter Tuning
+#### Single Objective Hyperparameter Tuning
 
 For this example, we will focus on two hyperparameters of a decision tree. In this single objective version, we want to find the set of hyperparameters that maximizes accuracy. We will specify a "grid" of possible values over which we will tune. This grid yields 84 possible combinations.
 
@@ -121,7 +121,7 @@ Running this code yields that our cross-validated training accuracy has dropped 
 
 But let's return to our discussion about multiple objectives. Maximizing accuracy is sort of maximizing the "greatest good" which very much falls in line with the [philosophy of Jeremy Bentham](https://en.wikipedia.org/wiki/Utilitarianism). What about other objectives like false positive rate or true positive rate (linked [here](https://en.wikipedia.org/wiki/Confusion_matrix) which consider that minority of people that our model misclassifies? How do we consider those objectives without having to rank or weight them?
 
-### Multi-Objective Hyperparameter Tuning
+#### Multi-Objective Hyperparameter Tuning
 
 In this multi-objective formulation, we will study the tradeoffs among the accuracy, false positive rate, true positive rate, and area under receiver operator characteristic curve objectives. So, we start out by computing each of those five objectives for our 84 hyperparameter combinations in our grid. Just as in the single objective case, these objectives are evaluated in a five-fold cross-validated fashion on the training set.
 
