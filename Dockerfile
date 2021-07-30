@@ -4,5 +4,6 @@ RUN conda install pandas=1.2.4
 RUN conda install scikit-learn=0.24.2
 RUN pip install pymoo==0.4.2.2
 RUN pip install hiplot==0.1.24
-COPY ["main.py", "/"]
+WORKDIR /app
+COPY ["main.py", "/app/"]
 ENTRYPOINT ["python", "-u", "main.py"]
