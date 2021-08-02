@@ -26,7 +26,7 @@ We will use the previously introduced UCI Breast Cancer Diagnostic problem with 
 
 This example will use the Scikit-Learn [(Pedregosa et al. 2011)](https://scikit-learn.org/stable/), NumPy [(Harris et al. 2020)](https://numpy.org/), Pandas [(The pandas development team 2020)](https://pandas.pydata.org/), and Pymoo [(Blank and Deb 2020)](https://pymoo.org/) libraries for the actual analysis. We will use the HiPlot [(Haziza, Rapin, and Synnaeve 2020)](https://ai.facebook.com/blog/hiplot-high-dimensional-interactive-plots-made-easy/) packages to do some interactive visualization. Install them in your current environment if you haven't already done so. If you want to go the Github route, [here is the repository]( https://github.com/kravitsjacob/multiobjective-hyperparameter) which contains the script as well as goodies needed to run the code I will provide! Specifically, that repository has a Dockerfile and virtual environment dependencies. I recommend using one of those two options to ensure consistent results with the blog post (I have also included instructions for those not familiar with either method). However, the code should run in any environment with Python 3 and all the proper dependencies installed.
 
-Once you have everything installed you should be able to import everything as such. We also create some naming variables which we will leave in the global scope.
+Once you have everything installed you should be able to import everything as such: 
 
 ```markdown
 import numpy as np
@@ -44,8 +44,10 @@ cv_objs_max = ['Mean CV Accuracy', 'Mean CV True Positive Rate', 'Mean CV AUC']
 test_objs = ['Test Accuracy', 'Test True Positive Rate', 'Test False Positive Rate', 'Test AUC']
 ```
 
+We also create some naming variables which we will leave in the global scope.
+
 #### Data Preparation
-Fortunately, the dataset is available for direct import via Scikit-Learn (so no need to manually download it yourself)! Feature selection is the process of determining only the most important features for your problem. Feature selection won't be the focus of this post, so I encourage you to read Rahul Agarwal’s post [(Agarwal 2020)](https://towardsdatascience.com/the-5-feature-selection-algorithms-every-data-scientist-need-to-know-3a6b566efd2) or the seminal work Langley [1994](https://www.aaai.org/Papers/Symposia/Fall/1994/FS-94-02/FS94-02-034.pdf) if you are not familiar with feature selection. We do a basic feature selection using the feature importances from a random forest. After we do our feature selection, we split the data and save 25 % for testing our model. We also do a stratified split (if you aren’t familiar see Brownlee [2020](https://machinelearningmastery.com/train-test-split-for-evaluating-machine-learning-algorithms/)). I have provided a simple function and function call to do this.
+Fortunately, the dataset is available for direct import via Scikit-Learn (so no need to manually download it yourself)! Feature selection is the process of determining only the most important features for your problem. Feature selection won't be the focus of this post, so I encourage you to read Rahul Agarwal’s post [(Agarwal 2020)](https://towardsdatascience.com/the-5-feature-selection-algorithms-every-data-scientist-need-to-know-3a6b566efd2) or the seminal work Langley [1994](https://www.aaai.org/Papers/Symposia/Fall/1994/FS-94-02/FS94-02-034.pdf) if you are not familiar with feature selection. We do a basic feature selection using the feature importances from a random forest. After we do our feature selection, we split the data and save 25 % for testing our model. We also do a stratified split (if you aren’t familiar see Brownlee [2020](https://machinelearningmastery.com/train-test-split-for-evaluating-machine-learning-algorithms/)). I have provided a simple function and function call to do this:
 
 ```markdown
 def dataPreparation():
@@ -76,7 +78,7 @@ X_train, X_test, y_train, y_test = dataPreparation()
 
 #### Default Hyperparameters
 
-Let's look at the performance of the default hyperparameters. These values are typically derived based on statistical proofs and are meant to perform decently on many problems.
+Let's look at the performance of the default hyperparameters. These values are typically derived based on statistical proofs and are meant to perform decently on many problems. Default hyperparameters are used in the following code:
 
 ```markdown
 def defaultHyperparameter(X_train, y_train):
@@ -90,15 +92,15 @@ print('Train Accuracy:', sklearn.metrics.accuracy_score(y_train, clf_default.pre
 print('Test Accuracy:', sklearn.metrics.accuracy_score(y_test, clf_default.predict(X_test)))
 ```
 
-After running this code, we see that the training accuracy is 1.00 and the test accuracy is 0.91. This means that our decision tree is being overfit to our training data. Here is a great opportunity to tune our hyperparameters so as not to overfit!
+After running this code, we see that the training accuracy is 1.00 (perfect accuracy) and the test accuracy is 0.91. This means that our decision tree is being overfit to our training data. Here is a great opportunity to tune our hyperparameters so as not to overfit!
 
 #### Single Objective Hyperparameter Tuning
 
-For this example, we will focus on two hyperparameters of a decision tree. In this single objective version, we want to find the set of hyperparameters that maximizes accuracy. We will specify a "grid" of possible values over which we will tune. This grid yields 84 possible combinations.
+For this example, we will focus on two of the hyperparameters of a decision tree. In this single objective version, we want to find the set of hyperparameters that maximizes accuracy. We will specify a "grid" of possible values over which we will tune. This grid yields 84 possible combinations:
 
 <p align="center"><img src="https://github.com/kravitsjacob/multiobjective-hyperparameter/blob/gh-pages/Figures/Hyperparameter%20Table.svg?raw=True"></p>
 
-Additionally, we will be evaluating performance using five-fold cross validation. In this technique, we iteratively split our training data as to not overfit our model to the entire training data set as was done in the previous section. For more information on what cross validation means Saranya Mandava has a nice blog about it [(Mandava 2018)](https://medium.com/@mandava807/cross-validation-and-hyperparameter-tuning-in-python-65cfb80ee485) as well as survey paper Arlot and Celisse [2010]( https://projecteuclid.org/journals/statistics-surveys/volume-4/issue-none/A-survey-of-cross-validation-procedures-for-model-selection/10.1214/09-SS054.full). 
+Additionally, we will be evaluating performance using five-fold cross validation. In this technique, we iteratively split our training data as to not overfit our model to the entire training data set as was done in the previous section. For more information on what cross validation means Saranya Mandava has a nice blog about it [(Mandava 2018)](https://medium.com/@mandava807/cross-validation-and-hyperparameter-tuning-in-python-65cfb80ee485) as well as the survey paper Arlot and Celisse [2010]( https://projecteuclid.org/journals/statistics-surveys/volume-4/issue-none/A-survey-of-cross-validation-procedures-for-model-selection/10.1214/09-SS054.full). 
 
 This analysis is applied in the following code:
 
@@ -112,7 +114,8 @@ def singleObjectiveGridSearch(X_train, y_train):
                                  max_features=gs.best_params_['max_features'], random_state=1008)
     clf.fit(X_train, y_train)
     return clf, gs
-    
+
+
 clf_SO, gs_SO = singleObjectiveGridSearch(X_train, y_train)
 print(clf_SO.get_params())
 print('CV Train Accuracy:', gs_SO.best_score_)
