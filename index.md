@@ -238,7 +238,7 @@ for i, j in zip(cv_objs, test_objs):
     print(df_non_dom[[i, j]].sort_values(i, ascending=False))
 ```
 
-We see that the objective preferences generally translate to the test set (there are a few exceptions due to rounding). Of course, this behavior is expected given that we used a cross-validated approach to get the non-dominated set in the first place, but it's nice to see the cross-validation is working. This is great news as we can be confident the objective preferences that we spent so much time forming and investigating throughout this process do in fact translate to new observations!
+After running this code, we see that the objective preferences generally translate to the test set (there are a few exceptions due to rounding). Of course, this behavior is expected given that we used a cross-validated approach to get the non-dominated set in the first place, but it's nice to see the cross-validation is working. This is great news as we can be confident the objective preferences that we spent so much time forming and investigating throughout this process do in fact translate to new observations!
 
 ## Conclusion
 
