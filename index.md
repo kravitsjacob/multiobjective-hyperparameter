@@ -49,6 +49,9 @@ Fortunately, the UCI Breast Cancer dataset is available for direct import via Sc
 
 ```markdown
 def dataPreparation():
+    # Test Parameters
+    test_size = 0.25
+    number_features = 5
     # Import
     data = sklearn.datasets.load_breast_cancer(as_frame=True)
     features = data.feature_names.tolist()
@@ -59,11 +62,11 @@ def dataPreparation():
     clf.fit(df[features], df['Classification'])
     feature_importances = pd.Series(list(clf.feature_importances_),
                                     index=features).sort_values(ascending=False)
-    important_features = feature_importances[0:5].index.tolist()
+    important_features = feature_importances[0:number_features].index.tolist()
     # Split
     X_train, X_test, y_train, y_test = sklearn.model_selection.train_test_split(df[important_features],
                                                                                 df['Classification'],
-                                                                                test_size=0.25,
+                                                                                test_size=test_size,
                                                                                 random_state=1008,
                                                                                 stratify=df['Classification'])
     return X_train, X_test, y_train, y_test
@@ -82,10 +85,10 @@ def defaultHyperparameter(X_train, y_train):
     clf.fit(X_train, y_train)
     return clf
     
-clf_df = defaultHyperparameter(X_train, y_train)
-print(clf_df.get_params())
-print('Train Accuracy:', sklearn.metrics.accuracy_score(y_train, clf_df.predict(X_train)))
-print('Test Accuracy:', sklearn.metrics.accuracy_score(y_test, clf_df.predict(X_test)))
+clf_default = defaultHyperparameter(X_train, y_train)
+print(clf_default.get_params())
+print('Train Accuracy:', sklearn.metrics.accuracy_score(y_train, clf_default.predict(X_train)))
+print('Test Accuracy:', sklearn.metrics.accuracy_score(y_test, clf_default.predict(X_test)))
 ```
 
 After running this code, we see that the training accuracy is 1.00 and the test accuracy is 0.91. This means that our decision tree is being overfit to our training data. Here is a great opportunity to tune our hyperparameters so as not to overfit!
@@ -101,7 +104,7 @@ Additionally, we will be evaluating performance using five-fold cross validation
 This analysis is applied in the following code:
 
 ```markdown
-def singleObjectiveGridSearch(X_train, X_test, y_train, y_test):
+def singleObjectiveGridSearch(X_train, y_train):
     parameter_grid = {'min_samples_split': np.insert(np.arange(10, 210, 10), 0, 2), 'max_features': [2, 3, 4, 5]}
     gs = sklearn.model_selection.GridSearchCV(sklearn.tree.DecisionTreeClassifier(random_state=1008),
                                               parameter_grid, cv=5, scoring='accuracy', n_jobs=-1)
@@ -163,11 +166,17 @@ How can we visualize the objective performance of our 84 hyperparameter combinat
 
 ```markdown
 def parallelPlot(df, color_column, invert_column):
+    df = df.copy()
+    # Make Unique IDs
+    df['Solution ID'] = df.index + 1
+    df['Solution ID'] = df['Solution ID'].apply(lambda x: '{0:0>5}'.format(x))
+    df['Solution ID'] = 'S'+df['Solution ID'].astype(str)
+    # Create Plot
     exp = hip.Experiment.from_dataframe(df)
     exp.parameters_definition[color_column].colormap = 'interpolateViridis'
     exp.display_data(hip.Displays.PARALLEL_PLOT).update({'hide': ['uid', 'max_features', 'min_samples_split'],
                                                          'invert': invert_column})
-    exp.display_data(hip.Displays.TABLE).update({'hide': ['from_uid']})
+    exp.display_data(hip.Displays.TABLE).update({'hide': ['uid', 'from_uid']})
     return exp
 
 
@@ -186,7 +195,7 @@ def nondomSort(df, objs, max_objs=None):
     # Flip Objectives to Maximize
     if max_objs is not None:
         df_sorting[max_objs] = -1.0 * df_sorting[max_objs]
-    # Nondominated Sorting
+    # Non-dominated Sorting
     nondom_idx = nds.find_non_dominated(df_sorting[objs].values)
     return df.iloc[nondom_idx]
 
@@ -203,6 +212,21 @@ We can gain some insights into this problem through our plot of the set of non-d
 Do these objective preferences translate to the “test” set we omitted at the start of this exercise? For example, does a solution that have good cross-validated accuracy also have a good accuracy on the test set? We can check this by ranking the test performance for each objective and compare the test performance to the cross-validated performance. This is simply done in the following code:
 
 ```markdown
+def getTestPerformance(X_train, X_test, y_train, y_test, params):
+    # Fit Model with Specified Hyperparameters
+    clf = sklearn.tree.DecisionTreeClassifier(min_samples_split=int(params['min_samples_split']),
+                                              max_features=int(params['max_features']), random_state=1008)
+    clf.fit(X_train, y_train)
+    y_pred = clf.predict(X_test)
+    # Compute Objectives on Test Set
+    tn, fp, fn, tp = sklearn.metrics.confusion_matrix(y_test, y_pred).ravel()
+    acc = (tp + tn) / (tn + fp + fn + tp)
+    tpr = tp / (tp + fn)
+    fpr = fp / (fp + tn)
+    auc = sklearn.metrics.roc_auc_score(y_test, clf.predict_proba(X_test)[:, 1])
+    return pd.Series([acc, tpr, fpr, auc], test_objs)
+
+
 # Non-Dominated Set Test Performance
 df_non_dom_test = df_non_dom.apply(lambda row: getTestPerformance(X_train, X_test, y_train, y_test, row), axis=1)
 df_non_dom = df_non_dom.join(df_non_dom_test)
