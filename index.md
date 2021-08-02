@@ -163,7 +163,7 @@ def multiObjectiveGridSearch(X_train, y_train):
 df_all = multiObjectiveGridSearch(X_train, y_train)
 ```
 
-In this code you will notice that we defined our own true positive rate and false positive rate functions while the other two objectives are built in to scikit-learn. I wanted to show how easy it is to extend scikit-learn's functionality!
+In this code you will notice that we defined our own true positive rate and false positive rate functions while the other two objectives are built in to Scikit-learn. I wanted to show how easy it is to extend Scikit-learn's functionality!
 
 How can we visualize the objective performance of our 84 hyperparameter combinations? I'm a big fan of interactive parallel plots which can be easily implemented via the HiPlot package although many similar tools exist in other languages [(Raseman, Jacobson, and Kasprzyk 2019)](https://github.com/ParasolJS). Here is code to create a parallel plot using the HiPlot package:
 
