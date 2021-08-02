@@ -114,7 +114,7 @@ def singleObjectiveGridSearch(X_train, y_train):
     clf.fit(X_train, y_train)
     return clf, gs
     
-clf_SO, gs_SO = singleObjectiveGridSearch(X_train, X_test, y_train, y_test)
+clf_SO, gs_SO = singleObjectiveGridSearch(X_train, y_train)
 print(clf_SO.get_params())
 print('CV Train Accuracy:', gs_SO.best_score_)
 print('Test Accuracy:', sklearn.metrics.accuracy_score(y_test, gs_SO.predict(X_test)))
