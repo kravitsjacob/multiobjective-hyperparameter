@@ -168,7 +168,6 @@ How can we visualize the objective performance of our 84 hyperparameter combinat
 
 ```markdown
 def parallelPlot(df, color_column, invert_column):
-    df = df.copy()
     # Make Unique IDs
     df['Solution ID'] = df.index + 1
     df['Solution ID'] = df['Solution ID'].apply(lambda x: '{0:0>5}'.format(x))
@@ -199,7 +198,7 @@ def nondomSort(df, objs, max_objs=None):
         df_sorting[max_objs] = -1.0 * df_sorting[max_objs]
     # Non-dominated Sorting
     nondom_idx = nds.find_non_dominated(df_sorting[objs].values)
-    return df.iloc[nondom_idx]
+    return df.iloc[nondom_idx].copy()
 
 df_non_dom = nondomSort(df_all, cv_objs, max_objs=cv_objs_max)
 parallelPlot(df_non_dom, color_column='Mean CV Accuracy', invert_column=cv_objs_max).to_html('non_dom.html')
