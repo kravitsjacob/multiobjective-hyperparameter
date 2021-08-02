@@ -10,7 +10,7 @@ I want to be clear, tuning hyperparameters is generally a "finishing touches" st
 
 For many problems, a single objective effectively captures desirable model performance. For example, consider the classic [Iris classification problem](https://archive.ics.uci.edu/ml/datasets/iris) where a model classifies types of Iris flowers. You are probably thinking that for this task you want a model that is as accurate as possible, and I would agree! For the Iris problem, I would pick the set of hyperparameters that maximizes model accuracy. 
  
-But now think about the other classic problem of breast cancer diagnosis based on the [Breast Cancer Wisconsin dataset](https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+\%28Diagnostic\%29) currently hosted in the University of California, Irvine repository [(Dua and Graff 2017)](http://archive.ics.uci.edu/ml). In this case, *how* your model classifies patients has very different implications. This is best visualized with its confusion matrix:
+But now think about the other classic problem of breast cancer diagnosis based on the [Breast Cancer Wisconsin dataset](https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+\%28Diagnostic\%29) currently hosted in the University of California, Irvine (UCI) repository [(Dua and Graff 2017)](http://archive.ics.uci.edu/ml). In this case, *how* your model classifies patients has very different implications. This is best visualized with its confusion matrix:
 
 <p align="center"><img src="https://github.com/kravitsjacob/multiobjective-hyperparameter/blob/gh-pages/Figures/Cancer%20Confusion%20Matrix.svg?raw=True"></p>
 
