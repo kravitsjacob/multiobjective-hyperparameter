@@ -201,6 +201,7 @@ def nondomSort(df, objs, max_objs=None):
     nondom_idx = nds.find_non_dominated(df_sorting[objs].values)
     return df.iloc[nondom_idx].copy()
 
+
 df_non_dom = nondomSort(df_all, cv_objs, max_objs=cv_objs_max)
 parallelPlot(df_non_dom, color_column='Mean CV Accuracy', invert_column=cv_objs_max).to_html('non_dom.html')
 ```
