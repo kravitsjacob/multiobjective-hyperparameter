@@ -85,7 +85,8 @@ def defaultHyperparameter(X_train, y_train):
     clf = sklearn.tree.DecisionTreeClassifier(random_state=1008)
     clf.fit(X_train, y_train)
     return clf
-    
+
+
 clf_default = defaultHyperparameter(X_train, y_train)
 print(clf_default.get_params())
 print('Train Accuracy:', sklearn.metrics.accuracy_score(y_train, clf_default.predict(X_train)))
