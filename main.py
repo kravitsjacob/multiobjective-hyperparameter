@@ -13,7 +13,6 @@ cv_objs_max = ['Mean CV Accuracy', 'Mean CV True Positive Rate', 'Mean CV AUC']
 test_objs = ['Test Accuracy', 'Test True Positive Rate', 'Test False Positive Rate', 'Test AUC']
 
 def dataPreparation():
-    # Test Parameters
     test_size = 0.25
     number_features = 5
     # Import
