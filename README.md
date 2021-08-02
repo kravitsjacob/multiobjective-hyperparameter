@@ -1,22 +1,22 @@
 # I About Project
-This is the accompanying repository to [this blog post](https://kravitsjacob.github.io/multiobjective-hyperparameter/) about taking a multi-objective approach to tuning machine learning model hyperparameters. The accompanying script provides a very simple example of this method applied in Python 3. However, the concepts and methods could easily adapted to many other machine-learning problems and other methods of implementation. As for running this script, Docker is the recommended procedure to ensure consistent results with the blog post. However, the script should run in any environmental with Python 3 and all the proper dependencies installed. 
+This is the accompanying repository to [this blog post](https://kravitsjacob.github.io/multiobjective-hyperparameter/) about taking a multi-objective approach to tuning machine learning model hyperparameters. The accompanying script provides a very simple example of this method applied in Python. However, the concepts and methods could easily be adapted to many other machine-learning problems and other methods of implementation. As for running this script, Docker is the recommended procedure to ensure consistent results with the blog post. However, the script should run in any environment with Python 3 and all the proper dependencies installed. 
 
 # II Running this code in Docker
-1. Clone this repository using command prompt/terminal $git clone https://github.com/kravitsjacob/multiobjective-hyperparameter 
-2. Change to the current working directory using command prompt/terminal $ cd <insert_path_to_data>\multiobjective-hyperparameter
-3. Download and Run Docker Desktop. For more information on Docker visit [here](https://docs.docker.com/desktop/). To ensure 
+1. Clone this repository using command prompt/terminal $```git clone https://github.com/kravitsjacob/multiobjective-hyperparameter``` 
+2. Change to the current working directory using command prompt/terminal $```cd <insert_path_to_data>\multiobjective-hyperparameter```
+3. Download and run Docker Desktop. For more information on Docker visit [here](https://docs.docker.com/desktop/). To ensure 
 that it is installed correctly go to the command prompt/terminal and enter $ docker --version
-4. Build the docker image by running $docker build --tag mohyper .
-5. Run the image and mount the folder so you can retrieve generated files $docker run -v <insert_path_to_data>\multiobjective-hyperparameter:/app mohyper 
+4. Build the docker image by running $```docker build --tag mohyper .```
+5. Run the image and mount the folder so you can retrieve generated files $```docker run -v <insert_path_to_data>\multiobjective-hyperparameter:/app mohyper``` 
 
 # III Running this code in a Virtual Environment
-1. Clone this repository using command prompt/terminal $git clone https://github.com/kravitsjacob/multiobjective-hyperparameter 
-2. Change to the current working directory using command prompt/terminal $ cd <insert_path_to_data>\multiobjective-hyperparameter
+1. Clone this repository using command prompt/terminal $```git clone https://github.com/kravitsjacob/multiobjective-hyperparameter```
+2. Change to the current working directory using command prompt/terminal $```cd <insert_path_to_data>\multiobjective-hyperparameter```
 3. Make sure you have Python 3 installed on your computer. This can be downloaded [here](https://www.python.org/downloads/). To ensure 
-that it is installed correctly go to the command prompt/terminal and enter $ python --version
+that it is installed correctly go to the command prompt/terminal and enter $```python --version```
 4. Set up and activate a virtual environment by following instructions [here](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/). 
-7. Install dependcies using requirements.txt found [here](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/#using-requirements-files)
-8. Run script using $python main.py
+7. Install dependencies using requirements.txt found [here](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/#using-requirements-files)
+8. Run script using $```python main.py```
 
 # IV Citing
 To cite the methods employed in this blog post, please cite:
