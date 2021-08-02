@@ -92,6 +92,7 @@ def nondomSort(df, objs, max_objs=None):
 
 
 def parallelPlot(df, color_column, invert_column):
+    df = df.copy()
     # Make Unique IDs
     df['Solution ID'] = df.index + 1
     df['Solution ID'] = df['Solution ID'].apply(lambda x: '{0:0>5}'.format(x))
@@ -124,10 +125,10 @@ def main():
     # Prepare
     X_train, X_test, y_train, y_test = dataPreparation()
     # Default Hyperparameter Values
-    clf_def = defaultHyperparameter(X_train, y_train)
-    print(clf_def.get_params())
-    print('Train Accuracy:', sklearn.metrics.accuracy_score(y_train, clf_def.predict(X_train)))
-    print('Test Accuracy:', sklearn.metrics.accuracy_score(y_test, clf_def.predict(X_test)))
+    clf_default = defaultHyperparameter(X_train, y_train)
+    print(clf_default.get_params())
+    print('Train Accuracy:', sklearn.metrics.accuracy_score(y_train, clf_default.predict(X_train)))
+    print('Test Accuracy:', sklearn.metrics.accuracy_score(y_test, clf_default.predict(X_test)))
     # Single Objective Grid Search
     clf_SO, gs_SO = singleObjectiveGridSearch(X_train, y_train)
     print(clf_SO.get_params())
