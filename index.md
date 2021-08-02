@@ -76,7 +76,7 @@ X_train, X_test, y_train, y_test = dataPreparation()
 
 #### Default Hyperparameters
 
-Let's look at the performance of the default hyperparameters. These values are typically derived based on statistical proofs and are meant to perform okay on many problems.
+Let's look at the performance of the default hyperparameters. These values are typically derived based on statistical proofs and are meant to perform decently on many problems.
 
 ```markdown
 def defaultHyperparameter(X_train, y_train):
