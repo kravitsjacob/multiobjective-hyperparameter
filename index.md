@@ -101,7 +101,7 @@ For this example, we will focus on two of the hyperparameters of a decision tree
 
 <p align="center"><img src="https://github.com/kravitsjacob/multiobjective-hyperparameter/blob/gh-pages/Figures/Hyperparameter%20Table.svg?raw=True"></p>
 
-Additionally, we will be evaluating performance using five-fold cross validation. In this technique, we iteratively split our training data as to not overfit our model to the entire training data set as was done in the previous section. For more information on what cross validation means Saranya Mandava has a nice blog about it [(Mandava 2018)](https://medium.com/@mandava807/cross-validation-and-hyperparameter-tuning-in-python-65cfb80ee485) as well as the survey paper Arlot and Celisse [2010]( https://projecteuclid.org/journals/statistics-surveys/volume-4/issue-none/A-survey-of-cross-validation-procedures-for-model-selection/10.1214/09-SS054.full). 
+Additionally, we will be evaluating performance using five-fold cross validation. In this technique, we iteratively split our training data as to not overfit our model to the entire training data set as was done in the previous section. For more information on what cross validation means Saranya Mandava has a nice blog post about it [(Mandava 2018)](https://medium.com/@mandava807/cross-validation-and-hyperparameter-tuning-in-python-65cfb80ee485) as well as the survey paper Arlot and Celisse [2010]( https://projecteuclid.org/journals/statistics-surveys/volume-4/issue-none/A-survey-of-cross-validation-procedures-for-model-selection/10.1214/09-SS054.full). 
 
 This analysis is applied in the following code:
 
