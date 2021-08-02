@@ -1,4 +1,4 @@
-Tuning your machine learning model's hyperparameters is a great way to tailor your model's performance. Your model keeps overfitting to your training data? Tuning your hyperparameters can help! When you tune a model's hyperparameters, you need to select some objective to quantify desirable model performance. For some problems, one of which will be discussed in this post, you may want to examine how model performance changes across *several* objectives. We will see that this process allows us to make a more informed choice of hyperparameters! 
+Tuning your machine learning model's hyperparameters is a great way to tailor your model's performance. Your model keeps overfitting to your training data? Tuning your hyperparameters can help! When you tune a model's hyperparameters, you need to select some objective to quantify desirable model performance. For some problems, one of which will be discussed in this post, you may want to examine how model performance changes across *several* objectives. We will see that this process allows us to make a better-informed choice of hyperparameters! 
 
 ## What are hyperparameters and why should we "tune" them?
 
