@@ -2,3 +2,6 @@ theme: jekyll-theme-slate
 title: Multi-Objective Machine Learning Hyperparameter Tuning
 description: (Without Explicit Objective Weighting)
 google_analytics: UA-204260937-1
+url: "https://kravitsjacob.github.io/multiobjective-hyperparameter/" # the base hostname & protocol for your site
+plugins:
+  - jekyll-sitemap
