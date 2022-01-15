@@ -39,9 +39,19 @@ import sklearn.ensemble
 import pymoo.util.nds.non_dominated_sorting as nds
 import hiplot as hip
 
-cv_objs = ['Mean CV Accuracy', 'Mean CV True Positive Rate', 'Mean CV False Positive Rate', 'Mean CV AUC']
+cv_objs = [
+    'Mean CV Accuracy',
+    'Mean CV True Positive Rate',
+    'Mean CV False Positive Rate',
+    'Mean CV AUC'
+]
 cv_objs_max = ['Mean CV Accuracy', 'Mean CV True Positive Rate', 'Mean CV AUC']
-test_objs = ['Test Accuracy', 'Test True Positive Rate', 'Test False Positive Rate', 'Test AUC']
+test_objs = [
+    'Test Accuracy',
+    'Test True Positive Rate',
+    'Test False Positive Rate',
+    'Test AUC'
+]
 ```
 
 We also create some naming variables which we will leave in the global scope.
@@ -50,30 +60,37 @@ We also create some naming variables which we will leave in the global scope.
 Fortunately, the dataset is available for direct import via Scikit-Learn (so no need to manually download it yourself)! Feature selection is the process of determining only the most important features for your problem. Feature selection won't be the focus of this post, so I encourage you to read Rahul Agarwal’s post [(Agarwal 2020)](https://towardsdatascience.com/the-5-feature-selection-algorithms-every-data-scientist-need-to-know-3a6b566efd2) or the seminal work Langley [1994](https://www.aaai.org/Papers/Symposia/Fall/1994/FS-94-02/FS94-02-034.pdf) if you are not familiar with feature selection. We do a basic feature selection using the feature importances from a random forest. After we do our feature selection, we split the data and save 25 % for testing our model. We also do a stratified split (if you aren’t familiar see Brownlee [2020](https://machinelearningmastery.com/train-test-split-for-evaluating-machine-learning-algorithms/)). I have provided a simple function and function call to do this:
 
 ```markdown
-def dataPreparation():
+def data_preparation():
     test_size = 0.25
     number_features = 5
     # Import
     data = sklearn.datasets.load_breast_cancer(as_frame=True)
     features = data.feature_names.tolist()
     df = data.frame
-    df['Classification'] = data['target'].replace({1: 'benign', 0: 'malignant'})
+    df['Classification'] = data['target'].replace(
+        {1: 'benign', 0: 'malignant'}
+    )
     # Feature Selection
     clf = sklearn.ensemble.RandomForestClassifier(random_state=1008)
     clf.fit(df[features], df['Classification'])
-    feature_importances = pd.Series(list(clf.feature_importances_),
-                                    index=features).sort_values(ascending=False)
+    feature_importances = pd.Series(
+        list(clf.feature_importances_),
+        index=features
+    ).sort_values(ascending=False)
     important_features = feature_importances[0:number_features].index.tolist()
     # Split
-    X_train, X_test, y_train, y_test = sklearn.model_selection.train_test_split(df[important_features],
-                                                                                df['Classification'],
-                                                                                test_size=test_size,
-                                                                                random_state=1008,
-                                                                                stratify=df['Classification'])
+    X_train, X_test, y_train, y_test = \
+        sklearn.model_selection.train_test_split(
+            df[important_features],
+            df['Classification'],
+            test_size=test_size,
+            random_state=1008,
+            stratify=df['Classification']
+        )
     return X_train, X_test, y_train, y_test
 
 
-X_train, X_test, y_train, y_test = dataPreparation()
+X_train, X_test, y_train, y_test = data_preparation()
 ```
 
 #### Default Hyperparameters
@@ -81,16 +98,20 @@ X_train, X_test, y_train, y_test = dataPreparation()
 Let's look at the performance of the default hyperparameters. These values are typically derived based on statistical proofs and are meant to perform decently on many problems. Default hyperparameters are used in the following code:
 
 ```markdown
-def defaultHyperparameter(X_train, y_train):
+def default_hyperparameter(X_train, y_train):
     clf = sklearn.tree.DecisionTreeClassifier(random_state=1008)
     clf.fit(X_train, y_train)
     return clf
 
 
-clf_default = defaultHyperparameter(X_train, y_train)
+clf_default = default_hyperparameter(X_train, y_train)
 print(clf_default.get_params())
-print('Train Accuracy:', sklearn.metrics.accuracy_score(y_train, clf_default.predict(X_train)))
-print('Test Accuracy:', sklearn.metrics.accuracy_score(y_test, clf_default.predict(X_test)))
+print('Train Accuracy:', sklearn.metrics.accuracy_score(
+    y_train, clf_default.predict(X_train))
+)
+print('Test Accuracy:', sklearn.metrics.accuracy_score(
+    y_test, clf_default.predict(X_test))
+)
 ```
 
 After running this code, we see that the training accuracy is 1.00 (perfect accuracy) and the test accuracy is 0.91. This means that our decision tree is being overfit to our training data. Here is a great opportunity to tune our hyperparameters so as not to overfit!
@@ -106,21 +127,34 @@ Additionally, we will be evaluating performance using five-fold cross validation
 This analysis is applied in the following code:
 
 ```markdown
-def singleObjectiveGridSearch(X_train, y_train):
-    parameter_grid = {'min_samples_split': np.insert(np.arange(10, 210, 10), 0, 2), 'max_features': [2, 3, 4, 5]}
-    gs = sklearn.model_selection.GridSearchCV(sklearn.tree.DecisionTreeClassifier(random_state=1008),
-                                              parameter_grid, cv=5, scoring='accuracy', n_jobs=-1)
+def single_objective_gridsearch(X_train, y_train):
+    parameter_grid = {
+        'min_samples_split': np.insert(np.arange(10, 210, 10), 0, 2),
+        'max_features': [2, 3, 4, 5]
+    }
+    gs = sklearn.model_selection.GridSearchCV(
+        sklearn.tree.DecisionTreeClassifier(random_state=1008),
+        parameter_grid,
+        cv=5,
+        scoring='accuracy',
+        n_jobs=-1
+    )
     gs.fit(X_train, y_train)
-    clf = sklearn.tree.DecisionTreeClassifier(min_samples_split=gs.best_params_['min_samples_split'],
-                                 max_features=gs.best_params_['max_features'], random_state=1008)
+    clf = sklearn.tree.DecisionTreeClassifier(
+        min_samples_split=gs.best_params_['min_samples_split'],
+        max_features=gs.best_params_['max_features'],
+        random_state=1008
+    )
     clf.fit(X_train, y_train)
     return clf, gs
 
 
-clf_SO, gs_SO = singleObjectiveGridSearch(X_train, y_train)
+clf_SO, gs_SO = single_objective_gridsearch(X_train, y_train)
 print(clf_SO.get_params())
 print('CV Train Accuracy:', gs_SO.best_score_)
-print('Test Accuracy:', sklearn.metrics.accuracy_score(y_test, gs_SO.predict(X_test)))
+print('Test Accuracy:', sklearn.metrics.accuracy_score(
+    y_test, gs_SO.predict(X_test))
+)
 ```
 
 Running this code yields that our cross-validated training accuracy has dropped to 0.94 (from 1.00) but our accuracy of predicting the test set has increased to 0.94 (from 0.91). This is great news; our model is no longer being overfit to our data! 
@@ -144,23 +178,37 @@ def tpr(y_true, y_pred):
     return obj
 
 
-def multiObjectiveGridSearch(X_train, y_train):
-    parameter_grid = {'min_samples_split': np.insert(np.arange(10, 210, 10), 0, 2),
-                      'max_features': [2, 3, 4, 5]}
-    scoring = {'Accuracy': 'accuracy', 'True Positive Rate': sklearn.metrics.make_scorer(tpr),
-               'False Positive Rate': sklearn.metrics.make_scorer(fpr), 'AUC': 'roc_auc'}
-    gs = sklearn.model_selection.GridSearchCV(sklearn.tree.DecisionTreeClassifier(random_state=1008),
-                                              parameter_grid, cv=5, scoring=scoring, n_jobs=-1, refit=False)
+def multi_objective_gridsearch(X_train, y_train):
+    parameter_grid = {
+        'min_samples_split': np.insert(np.arange(10, 210, 10), 0, 2),
+        'max_features': [2, 3, 4, 5]
+    }
+    scoring = {
+        'Accuracy': 'accuracy',
+        'True Positive Rate': sklearn.metrics.make_scorer(tpr),
+        'False Positive Rate': sklearn.metrics.make_scorer(fpr),
+        'AUC': 'roc_auc'
+    }
+    gs = sklearn.model_selection.GridSearchCV(
+        sklearn.tree.DecisionTreeClassifier(random_state=1008),
+        parameter_grid,
+        cv=5,
+        scoring=scoring,
+        n_jobs=-1,
+        refit=False
+    )
     gs.fit(X_train, y_train)
     df = pd.DataFrame(gs.cv_results_['params'])
     df['Mean CV Accuracy'] = gs.cv_results_['mean_test_Accuracy']
-    df['Mean CV True Positive Rate'] = gs.cv_results_['mean_test_True Positive Rate']
-    df['Mean CV False Positive Rate'] = gs.cv_results_['mean_test_False Positive Rate']
+    df['Mean CV True Positive Rate'] = \
+        gs.cv_results_['mean_test_True Positive Rate']
+    df['Mean CV False Positive Rate'] = \
+        gs.cv_results_['mean_test_False Positive Rate']
     df['Mean CV AUC'] = gs.cv_results_['mean_test_AUC']
     return df
     
     
-df_all = multiObjectiveGridSearch(X_train, y_train)
+df_all = multi_objective_gridsearch(X_train, y_train)
 ```
 
 In this code you will notice that we defined our own true positive rate and false positive rate functions while the other two objectives are built in to Scikit-Learn. I wanted to show how easy it is to extend Scikit-Learn's functionality!
@@ -168,7 +216,7 @@ In this code you will notice that we defined our own true positive rate and fals
 How can we visualize the objective performance of our 84 hyperparameter combinations? I'm a big fan of interactive parallel plots which can be easily implemented via the HiPlot package although many similar tools exist in other languages [(Raseman, Jacobson, and Kasprzyk 2019)](https://github.com/ParasolJS). Here is code to create a parallel plot using the HiPlot package:
 
 ```markdown
-def parallelPlot(df, color_column, invert_column):
+def parallel_plot(df, color_column, invert_column):
     # Make Unique IDs
     df['Solution ID'] = df.index + 1
     df['Solution ID'] = df['Solution ID'].apply(lambda x: '{0:0>5}'.format(x))
@@ -176,13 +224,26 @@ def parallelPlot(df, color_column, invert_column):
     # Create Plot
     exp = hip.Experiment.from_dataframe(df)
     exp.parameters_definition[color_column].colormap = 'interpolateViridis'
-    exp.display_data(hip.Displays.PARALLEL_PLOT).update({'hide': ['uid', 'max_features', 'min_samples_split', 'Solution ID'],
-                                                         'invert': invert_column})
+    exp.display_data(hip.Displays.PARALLEL_PLOT).update(
+        {
+            'hide': [
+                'uid',
+                'max_features',
+                'min_samples_split',
+                'Solution ID'
+            ],
+            'invert': invert_column
+        }
+    )
     exp.display_data(hip.Displays.TABLE).update({'hide': ['uid', 'from_uid']})
     return exp
 
 
-parallelPlot(df_all, color_column='Mean CV Accuracy', invert_column=cv_objs_max).to_html('all.html')
+parallel_plot(
+    df_all,
+    color_column='Mean CV Accuracy',
+    invert_column=cv_objs_max
+).to_html('all.html')
 ```
  
 {% include all.html %}
@@ -192,7 +253,7 @@ So, what are we looking at here? Each hyperparameter combination is represented 
 But let's study two solutions in this plot to compare their performance: solution S00065 (```max_features```: 5, ```min_sample_split```: 10) and solution S00005 (```max_features```: 2, ```min_sample_split```: 40). I have linked to the filtered state of this webpage with *only these two solutions* [here](https://kravitsjacob.github.io/multiobjective-hyperparameter/?hip.filters=%5B%7B%22type%22%3A%22Not%22%2C%22data%22%3A%7B%22type%22%3A%22All%22%2C%22data%22%3A%5B%7B%22type%22%3A%22Range%22%2C%22data%22%3A%7B%22col%22%3A%22Mean+CV+False+Positive+Rate%22%2C%22type%22%3A%22numeric%22%2C%22min%22%3A0.08229088219929034%2C%22max%22%3A0.09004633869993828%2C%22include_infnans%22%3Afalse%7D%7D%5D%7D%7D%2C%7B%22type%22%3A%22Not%22%2C%22data%22%3A%7B%22type%22%3A%22All%22%2C%22data%22%3A%5B%7B%22type%22%3A%22Range%22%2C%22data%22%3A%7B%22col%22%3A%22Mean+CV+False+Positive+Rate%22%2C%22type%22%3A%22numeric%22%2C%22min%22%3A0.03622872185246246%2C%22max%22%3A0.07582313949780518%2C%22include_infnans%22%3Afalse%7D%7D%5D%7D%7D%2C%7B%22type%22%3A%22Not%22%2C%22data%22%3A%7B%22type%22%3A%22All%22%2C%22data%22%3A%5B%7B%22type%22%3A%22All%22%2C%22data%22%3A%5B%5D%7D%2C%7B%22type%22%3A%22Search%22%2C%22data%22%3A%22S00006%22%7D%5D%7D%7D%5D&hip.color_by=%22Mean+CV+Accuracy%22&hip.PARALLEL_PLOT.order=%5B%22Mean+CV+Accuracy%22%2C%22Mean+CV+True+Positive+Rate%22%2C%22Mean+CV+False+Positive+Rate%22%2C%22Mean+CV+AUC%22%2C%22Solution+ID%22%5D) (note, this will filter solutions on both plots on this page, so I recommend clicking "Restore" on each plot after viewing). We see that solution S00065 does better on *every* objective than solution S00005. By that reasoning, there would never be a reason to pick solution S00005 if all we cared about were these four objectives. Commonly, we say that solution S00065 "dominates" solution S00005. In order for a solution to "dominate" another, it needs to perform the same or better on all objectives and strictly better on at least one. Continuing this logic, we only really care about the *non*dominated solutions (which is the converse of dominated). So we apply a nondominated sort to this set and re-plot:
 
 ```markdown
-def nondomSort(df, objs, max_objs=None):
+def nondom_sort(df, objs, max_objs=None):
     df_sorting = df.copy()
     # Flip Objectives to Maximize
     if max_objs is not None:
@@ -202,8 +263,12 @@ def nondomSort(df, objs, max_objs=None):
     return df.iloc[nondom_idx].copy()
 
 
-df_non_dom = nondomSort(df_all, cv_objs, max_objs=cv_objs_max)
-parallelPlot(df_non_dom, color_column='Mean CV Accuracy', invert_column=cv_objs_max).to_html('non_dom.html')
+df_non_dom = nondom_sort(df_all, cv_objs, max_objs=cv_objs_max)
+parallel_plot(
+    df_non_dom,
+    color_column='Mean CV Accuracy',
+    invert_column=cv_objs_max
+).to_html('non_dom.html')
 ```
 
 {% include non_dom.html %}
@@ -215,10 +280,13 @@ We can gain some insights into this problem through our plot of the set of non-d
 Do these objective preferences translate to the “test” set we omitted at the start of this exercise? For example, does a solution that have good cross-validated accuracy also have good accuracy on the test set? We can check this by ranking the test performance for each objective and compare the test performance to the cross-validated performance. This is done in the following code:
 
 ```markdown
-def getTestPerformance(X_train, X_test, y_train, y_test, params):
+def get_test_performance(X_train, X_test, y_train, y_test, params):
     # Fit Model with Specified Hyperparameters
-    clf = sklearn.tree.DecisionTreeClassifier(min_samples_split=int(params['min_samples_split']),
-                                              max_features=int(params['max_features']), random_state=1008)
+    clf = sklearn.tree.DecisionTreeClassifier(
+        min_samples_split=int(params['min_samples_split']),
+        max_features=int(params['max_features']),
+        random_state=1008
+    )
     clf.fit(X_train, y_train)
     y_pred = clf.predict(X_test)
     # Compute Objectives on Test Set
@@ -226,14 +294,22 @@ def getTestPerformance(X_train, X_test, y_train, y_test, params):
     acc = (tp + tn) / (tn + fp + fn + tp)
     tpr = tp / (tp + fn)
     fpr = fp / (fp + tn)
-    auc = sklearn.metrics.roc_auc_score(y_test, clf.predict_proba(X_test)[:, 1])
+    auc = sklearn.metrics.roc_auc_score(
+        y_test,
+        clf.predict_proba(X_test)[:, 1]
+    )
     return pd.Series([acc, tpr, fpr, auc], test_objs)
 
 
 # Non-Dominated Set Test Performance
-df_non_dom_test = df_non_dom.apply(lambda row: getTestPerformance(X_train, X_test, y_train, y_test, row), axis=1)
+df_non_dom_test = df_non_dom.apply(
+    lambda row: get_test_performance(
+        X_train, X_test, y_train, y_test, row
+    ),
+    axis=1
+)
 df_non_dom = df_non_dom.join(df_non_dom_test)
-# Check if Objective Performance is Preserved by Looking at Sorted Objective Values
+# Check if Performance is Preserved by Looking at Sorted Objective Values
 for i, j in zip(cv_objs, test_objs):
     print(df_non_dom[[i, j]].sort_values(i, ascending=False))
 ```
